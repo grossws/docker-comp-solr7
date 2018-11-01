@@ -1,0 +1,6 @@
+<arr name="queries">
+  <lst>
+    <str name="q">*:* NOT *:*</str>
+    <int name="rows">0</int>
+  </lst>
+</arr>

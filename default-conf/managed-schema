@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="anenerbe-base" version="1.6">
+  <uniqueKey>id</uniqueKey>
+
+  <field name="id" type="string" required="true"/>
+  <field name="_version_" type="long" indexed="false"/>
+
+  <field name="text" type="text" multiValued="true"/>
+
+  <dynamicField name="*_s" type="string"/>
+  <dynamicField name="*_ss" type="string" multiValued="true"/>
+  <dynamicField name="*_b" type="boolean"/>
+  <dynamicField name="*_bs" type="boolean" multiValued="true"/>
+  <dynamicField name="*_i" type="int"/>
+  <dynamicField name="*_is" type="int" multiValued="true"/>
+  <dynamicField name="*_l" type="long"/>
+  <dynamicField name="*_ls" type="long" multiValued="true"/>
+  <dynamicField name="*_f" type="float"/>
+  <dynamicField name="*_fs" type="float" multiValued="true"/>
+  <dynamicField name="*_d" type="double"/>
+  <dynamicField name="*_ds" type="double" multiValued="true"/>
+  <dynamicField name="*_dt" type="date"/>
+  <dynamicField name="*_dts" type="date" multiValued="true"/>
+  <dynamicField name="*_e" type="entities"/>
+  <dynamicField name="*_txt" type="text"/>
+
+  <fieldType name="string" class="solr.StrField"
+             stored="false" indexed="true" docValues="true"
+             sortMissingLast="true"/>
+  <fieldType name="boolean" class="solr.BoolField"
+             stored="false" indexed="true" docValues="true"
+             sortMissingLast="true"/>
+
+  <fieldType name="int" class="solr.IntPointField"
+             stored="false" indexed="true" docValues="true"/>
+  <fieldType name="long" class="solr.LongPointField"
+             stored="false" indexed="true" docValues="true"/>
+  <fieldType name="float" class="solr.FloatPointField"
+             stored="false" indexed="true" docValues="true"/>
+  <fieldType name="double" class="solr.DoublePointField"
+             stored="false" indexed="true" docValues="true"/>
+  <fieldType name="date" class="solr.DatePointField"
+             stored="false" indexed="true" docValues="true"/>
+
+  <fieldType name="entities" class="org.anenerbe.solr.DocValuesTextField"
+             stored="false" indexed="true" docValues="true" multiValued="true"
+             omitReversedTerms="true">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ReversedWildcardFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+  <fieldType name="text" class="solr.TextField"
+             stored="false" indexed="true" docValues="false"
+             positionIncrementGap="100" autoGeneratePhraseQueries="true">
+    <analyzer type="index">
+      <charFilter class="solr.HTMLStripCharFilterFactory"/>
+      <tokenizer class="solr.SimplePatternSplitTokenizerFactory" pattern="[ &#x9;&#xA;&#xD;&quot;]+"/>
+
+      <filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1"
+              catenateWords="1" catenateNumbers="1" catenateAll="1"
+              splitOnCaseChange="1" splitOnNumerics="1"
+              preserveOriginal="0"/>
+
+      <filter class="solr.LengthFilterFactory" min="1" max="1024"/>
+
+      <filter class="solr.LowerCaseFilterFactory"/>
+
+      <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_ru_sb.txt" format="snowball"/>
+      <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_en_sb.txt" format="snowball"/>
+      <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+
+      <filter class="solr.FlattenGraphFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+      <filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1"
+              catenateWords="1" catenateNumbers="1" catenateAll="1"
+              splitOnCaseChange="1" splitOnNumerics="1"
+              preserveOriginal="0"/>
+
+      <filter class="solr.LowerCaseFilterFactory"/>
+
+      <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_ru_sb.txt" format="snowball"/>
+      <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords_en_sb.txt" format="snowball"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+    </analyzer>
+  </fieldType>
+</schema>
